@@ -3,19 +3,23 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>ここから見て</title>
+    <title>YOUTUBE 再生時間指定アドレス作成</title>
 </head>
 
 <body>
 
-    <p>YOUTUBEのアドレスと希望再生時間を入力してください。</p>
-    <p>再生時間はどの形式でもかまいませんが、半角数値で指定してください</p>
+    <p>
+        YOUTUBEのアドレスと希望再生時間を入力してください。<br>
+        半角数値で指定してください
+    </p>
 
     <p>
-        <input type="text" id="orgUrl">
+        YOUTUBEアドレス<br>
+        <input type="text" id="orgUrl" style="width: 200px;">
     </p>
     <p>
-        <input type="text" id="loadTime_m">　分　<input type="text" id="loadTime_s">　秒　
+        希望再生時間<br>
+        <input type="text" id="loadTime_m" style="width: 50px;">　分　<input type="text" id="loadTime_s" style="width: 50px;">　秒　
     </p>
     <input type="button" value="アドレス作成" id="checkButton">
     <p id="msg"></p>
