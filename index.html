@@ -3,23 +3,65 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YOUTUBE 再生時間指定アドレス作成</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            padding: 20px;
+        }
+
+        p {
+            margin-bottom: 10px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cccccc;
+            border-radius: 3px;
+            font-size: 14px;
+        }
+
+        input[type="button"] {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            border-radius: 3px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        input[type="button"]:hover {
+            background-color: #0056b3;
+        }
+
+        #msg {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+    </style>
 </head>
 
 <body>
-
     <p>
         YOUTUBEのアドレスと希望再生時間を入力してください。<br>
-        半角数値で指定してください
+        半角数値で指定してください。
     </p>
 
     <p>
         YOUTUBEアドレス<br>
-        <input type="text" id="orgUrl" style="width: 200px;">
+        <input type="text" id="orgUrl">
     </p>
     <p>
         希望再生時間<br>
-        <input type="text" id="loadTime_m" style="width: 50px;">　分　<input type="text" id="loadTime_s" style="width: 50px;">　秒　
+        <input type="text" id="loadTime_m" style="width: 50px;"> 分
+        <input type="text" id="loadTime_s" style="width: 50px;"> 秒
     </p>
     <input type="button" value="アドレス作成" id="checkButton">
     <p id="msg"></p>
