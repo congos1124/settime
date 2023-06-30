@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>ここから見て</title>
+</head>
+
+<body>
+
+    <p>YOUTUBEのアドレスと希望再生時間を入力してください。</p>
+    <p>再生時間はどの形式でもかまいませんが、半角数値で指定してください</p>
+
+    <p>
+        <input type="text" id="orgUrl">
+    </p>
+    <p>
+        <input type="text" id="loadTime_m">　分　<input type="text" id="loadTime_s">　秒　
+    </p>
+    <input type="button" value="アドレス作成" id="checkButton">
+    <p id="msg"></p>
+
+    <script>
+        function butotnClick() {
+
+            // HTMLのテキストボックス(orgUrl)要素を取得
+            var orgUrl = document.getElementById('orgUrl');
+
+            // テキストボックス(orgUrl)の値を取得
+            var url = orgUrl.value;
+
+            // YouTubeのアドレスかどうかを判定
+            if (isYouTubeURL(url)) {
+                // ビデオIDを抽出
+                var videoId = extractVideoId(url);
+
+
+                // HTMLのテキストボックス(loadTime_m)要素を取得
+                var loadTime_m = document.getElementById('loadTime_m');
+                var loadTime_s = document.getElementById('loadTime_s');
+
+                // テキストボックス(loadTime_m)の値を取得
+                var value1 = loadTime_m.value;
+                var value2 = loadTime_s.value;
+
+                // // 数値が含まれているかを判定
+                // var numcheck = value.match(/\d+/g);
+
+                // // 数値が含まれている場合の処理
+                // if (numcheck) {
+                // 数値が含まれているかを判定
+                var matches1 = value1.match(/\d+/g);
+                var matches2 = value2.match(/\d+/g);
+
+                if (matches1 || matches2) {
+
+                    // 数値の配列を取得
+                    var numbers1 = matches1.map(function (match) {
+                        return parseInt(match, 10);
+                    });
+
+                    // var formattedTime = matches1 + "m" + matches2 + "s";
+                    var formattedTime = "";
+
+                    if (matches1 && matches2) {
+                        formattedTime = matches1 + "m" + matches2 + "s";
+                    } else if (matches1) {
+                        formattedTime = matches1 + "m";
+                    } else if (matches2) {
+                        formattedTime = matches2 + "s";
+                    }
+
+                    // ビデオIDをショートアドレスにして時間指定をしてリンク表示
+                    msg.innerHTML = '<a href="https://youtu.be/' + videoId + '?t=' + formattedTime + '">https://youtu.be/' + videoId + '?t=' + formattedTime + '/</a>';
+                } else {
+                    // ビデオIDをショートアドレスにしてリンク表示
+                    msg.innerHTML = '<a href="https://youtu.be/' + videoId + '/">https://youtu.be/' + videoId + '/</a>';
+                }
+
+            } else {
+                msg.innerText = 'ちがくない？';
+            }
+
+        }
+
+        // YouTubeのアドレスかどうかを判定する関数
+        function isYouTubeURL(url) {
+            var pattern = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.?be)\/.+/;
+            return pattern.test(url);
+        }
+
+        // // ビデオIDを抽出する関数
+        // // liveアドレスに非対応Ver.
+        //
+        // function extractVideoId(url) {
+        //     var match = url.match(/(?<=v=|youtu\.be\/|\/embed\/|\/v\/|\/\d{1,2}\/|\/v=|^youtu\.be$|\/embed$|\/v$|^youtu\.be$|\/embed$|\/v$|^youtu\.be$|\/embed$|\/v$|^youtu\.be$|\/embed$|\/v$|^youtu\.be$|\/embed$|\/v$)([^#\\&\\?]*).*/);
+        //     if (match) {
+        //         return match[1];
+        //     }
+        //     return null;
+        // }
+
+        // YouTubeのURLからビデオIDを抽出する関数
+        function extractVideoId(url) {
+            var videoId = "";
+            var regex = /(?:\/|%3D|v=|vi=)([0-9A-Za-z_-]{11})(?:[%#?&]|$)/;
+            var match = url.match(regex);
+
+            if (match) {
+                videoId = match[1];
+            }
+
+            return videoId;
+        }
+
+        checkButton.addEventListener('click', butotnClick);
+    </script>
+
+</body>
+
+</html>
