@@ -1,1 +1,174 @@
+<!DOCTYPE html>
+<html lang="ja">
 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YOUTUBE 再生時間指定アドレス作成</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            padding: 20px;
+        }
+
+        p {
+            margin-bottom: 10px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cccccc;
+            border-radius: 3px;
+            font-size: 14px;
+        }
+
+        input[type="button"] {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            border-radius: 3px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        input[type="button"]:hover {
+            background-color: #0056b3;
+        }
+
+        #msg {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <p>
+        YOUTUBEのアドレスと希望再生時間を半角数値で入力してください。<br>
+        ※分、秒どちらか一方のみの指定も可能です。
+    </p>
+    <p>
+        YOUTUBEアドレス<br>
+        <input type="text" id="orgUrl">
+    </p>
+    <p>
+        希望再生時間<br>
+        <input type="text" id="loadTime_m" style="width: 50px;"> 分
+        <input type="text" id="loadTime_s" style="width: 50px;"> 秒
+    </p>
+    <input type="button" value="アドレス作成" id="checkButton">
+    
+    <div id="resultContainer" style="display: none; margin-top: 10px;">
+        <p id="msg" style="margin-top: 0;"></p>
+        <input type="button" value="URLをコピー" id="copyButton" style="background-color: #28a745; margin-top: 5px;">
+    </div>
+
+    <script>
+        function butotnClick() {
+            // HTMLのテキストボックス(orgUrl)要素を取得
+            var orgUrl = document.getElementById('orgUrl');
+            // テキストボックス(orgUrl)の値を取得
+            var url = orgUrl.value;
+
+            // YouTubeのアドレスかどうかを判定
+            if (isYouTubeURL(url)) {
+                // ビデオIDを抽出
+                var videoId = extractVideoId(url);
+
+                // HTMLのテキストボックス(loadTime_m)要素を取得
+                var loadTime_m = document.getElementById('loadTime_m');
+                var loadTime_s = document.getElementById('loadTime_s');
+
+                // テキストボックス(loadTime_m)の値を取得
+                var value1 = loadTime_m.value;
+                var value2 = loadTime_s.value;
+
+                var matches1 = value1.match(/\d+/g);
+                var matches2 = value2.match(/\d+/g);
+
+                if (matches1 || matches2) {
+                    // 数値の配列を取得
+                    var numbers1 = matches1 ? matches1.map(function (match) {
+                        return parseInt(match, 10);
+                    }) : null;
+
+                    var formattedTime = "";
+                    if (matches1 && matches2) {
+                        formattedTime = matches1 + "m" + matches2 + "s";
+                    } else if (matches1) {
+                        formattedTime = matches1 + "m";
+                    } else if (matches2) {
+                        formattedTime = matches2 + "s";
+                    }
+
+                    // 変更箇所：時間指定つきURLの生成と表示、コピーボタンの可視化
+                    var generatedUrl = 'https://youtu.be/' + videoId + '?t=' + formattedTime;
+                    msg.innerHTML = '<a href="' + generatedUrl + '" target="_blank">' + generatedUrl + '</a>';
+                    document.getElementById('resultContainer').style.display = 'block';
+
+                } else {
+                    // 変更箇所：時間指定なしURLの生成と表示、コピーボタンの可視化
+                    var generatedUrl = 'https://youtu.be/' + videoId;
+                    msg.innerHTML = '<a href="' + generatedUrl + '" target="_blank">' + generatedUrl + '</a>';
+                    document.getElementById('resultContainer').style.display = 'block';
+                }
+
+            } else {
+                msg.innerText = 'YOUTUBEのアドレスを入力してください';
+                // 変更箇所：エラー時はコピーボタンのエリアを非表示にする
+                document.getElementById('resultContainer').style.display = 'none';
+            }
+        }
+
+        // YouTubeのアドレスかどうかを判定する関数
+        function isYouTubeURL(url) {
+            var pattern = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.?be)\/.+/;
+            return pattern.test(url);
+        }
+
+        // YouTubeのURLからビデオIDを抽出する関数
+        function extractVideoId(url) {
+            var videoId = "";
+            var regex = /(?:\/|%3D|v=|vi=)([0-9A-Za-z_-]{11})(?:[%#?&]|$)/;
+            var match = url.match(regex);
+            if (match) {
+                videoId = match[1];
+            }
+            return videoId;
+        }
+
+        // 追加箇所：コピー処理を行う関数
+        function copyToClipboard() {
+            var link = document.querySelector('#msg a');
+            if (link) {
+                var urlText = link.getAttribute('href');
+                
+                navigator.clipboard.writeText(urlText).then(function() {
+                    var copyBtn = document.getElementById('copyButton');
+                    copyBtn.value = 'コピーしました！';
+                    copyBtn.style.backgroundColor = '#1e7e34'; // やや暗い緑に変化
+                    
+                    // 2秒後にボタンの表記を元に戻す
+                    setTimeout(function() {
+                        copyBtn.value = 'URLをコピー';
+                        copyBtn.style.backgroundColor = '#28a745';
+                    }, 2000);
+                }).catch(function(err) {
+                    alert('コピーに失敗しました: ', err);
+                });
+            }
+        }
+
+        checkButton.addEventListener('click', butotnClick);
+        // 追加箇所：コピーボタンのクリックイベント
+        document.getElementById('copyButton').addEventListener('click', copyToClipboard);
+    </script>
+</body>
+
+</html>
